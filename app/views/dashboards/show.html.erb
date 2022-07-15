@@ -1,2 +1,65 @@
-<h1>Dashboards#show</h1>
-<p>Find me in app/views/dashboards/show.html.erb</p>
+<div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-10 space-y-4">
+
+  <h1 class="text-3xl font-bold font-richblack-900">Dashboard</h1>
+
+  <!-- This example requires Tailwind CSS v2.0+ -->
+  <div class="rounded-md bg-blue-50 p-4">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <!-- Heroicon name: solid/information-circle -->
+        <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="ml-3 flex-1 md:flex md:justify-between">
+        <p class="text-sm text-blue-700">This dashboard is only for paying users like you.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">Billing Information</h3>
+      <p class="mt-1 max-w-2xl text-sm text-gray-500">Personal details and application.</p>
+    </div>
+    <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+      <dl class="sm:divide-y sm:divide-gray-200">
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Stripe Customer</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= current_user.customer.stripe_id %></dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Stripe Subscription</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            <%= current_user.subscriptions.last.stripe_id %>
+            <span class="inline-flex items-center ml-4 px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800"> <%= current_user.subscriptions.last.status %> </span>
+          </dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Plan</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            <!-- we can fetch some data from the database -->
+            <%= current_user.subscriptions.last.stripe_product_name %>
+
+            <!-- or we can fetch from the API -->
+            <%= number_to_currency(current_user.subscriptions.last.price.unit_amount / 100) %> /
+            <%= current_user.subscriptions.last.price.recurring.interval %>
+          </dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Email address</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= current_user.email %></dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">Manage</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            <form action="/billing" method="post" data-turbo="false">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <button class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium text-emerald-900 bg-emerald-400 hover:bg-gray-700">Manage</button>
+            </form>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>

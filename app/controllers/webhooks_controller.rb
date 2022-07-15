@@ -3,7 +3,7 @@ class WebhooksController < ApplicationController
 
   def create
     # handle a stripe webhook with signature verification using stripe gem
-    # payload = request.body.read
+    payload = request.body.read
     sig_header = request.env['HTTP_STRIPE_SIGNATURE']
     endpoint_secret = Rails.application.credentials.dig(:stripe, :webhook_signing_secret)
     event = nil
@@ -26,19 +26,34 @@ class WebhooksController < ApplicationController
     case event.type
     when 'checkout.session.completed'
       handle_checkout_session_completed(event)
-    when 'customer.subscription.updated', 'customer.subscription.deleted'
+    when 'customer.subscription.updated'
       handle_subscription_updated(event)
+    when 'customer.subscription.deleted'
+      handle_subscription_deleted(event)
     else
       puts "Unhandled event type: #{event.type}"
     end
   end
 
+  def handle_subscription_deleted(event)
+    subscription = event.data.object
+    sub = Subscription.find_by(stripe_id: subscription.id)
+    sub.update!(
+      status: subscription.status,
+    )
+  end
+
   def handle_subscription_updated(event)
     subscription = event.data.object
-    subscription = Subscription.find_by(stripe_id: subscription.id)
-    subscription.update!(
+    subscription = Stripe::Subscription.retrieve(
+      id: subscription.id,
+      expand: ['items.data.price.product']
+    )
+    sub = Subscription.find_by(stripe_id: subscription.id)
+    sub.update!(
       status: subscription.status,
-      stripe_price_id: subscription.items.data.first.price,
+      stripe_price_id: subscription.items.data.first.price.id,
+      stripe_product_name: subscription.items.data.first.price.product.name,
       quantity: subscription.items.data.first.quantity
     )
   end
@@ -53,12 +68,16 @@ class WebhooksController < ApplicationController
         stripe_id: checkout_session.customer
       )
 
-      subscription = Stripe::Subscription.retrieve(checkout_session.subscription)
+      subscription = Stripe::Subscription.retrieve(
+        id: checkout_session.subscription,
+        expand: ['items.data.price.product']
+      )
 
       subscription = Subscription.create!(
         customer: customer,
         stripe_id: subscription.id,
-        stripe_price_id: subscription.items.data.first.price,
+        stripe_price_id: subscription.items.data.first.price.id,
+        stripe_product_name: subscription.items.data.first.price.product.name,
         status: subscription.status,
         quantity: subscription.items.data.first.quantity
       )

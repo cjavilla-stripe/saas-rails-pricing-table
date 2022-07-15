@@ -16,4 +16,8 @@ class Subscription < ApplicationRecord
   has_one :user, through: :customer
 
   scope :active, -> { where(status: ['active', 'trialing']) }
+
+  def price
+    Stripe::Price.retrieve(id: stripe_price_id, expand: ['product'])
+  end
 end

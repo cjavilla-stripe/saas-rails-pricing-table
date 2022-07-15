@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.1].define(version: 2022_07_15_184428) do
     t.bigint "customer_id", null: false
     t.string "stripe_id"
     t.string "stripe_price_id"
+    t.string "stripe_product_name"
     t.string "status"
     t.string "quantity"
     t.datetime "created_at", null: false
