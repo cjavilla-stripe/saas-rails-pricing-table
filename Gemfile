@@ -67,3 +67,10 @@ group :development do
   # gem "spring"
 end
 
+
+gem "devise", "~> 4.8"
+
+gem "stripe", "~> 6.5"
+
+
+gem "annotate", "~> 3.2"

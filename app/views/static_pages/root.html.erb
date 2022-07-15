@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SaaS Rails</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+
+  <body>
+    <div class="bg-white">
+      <div class="relative overflow-hidden">
+        <header class="relative">
+          <div class="bg-richblack pt-6">
+            <nav class="relative max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6" aria-label="Global">
+              <div class="flex items-center flex-1">
+                <div class="hidden space-x-8 md:flex">
+                  <a href="/dashboard" class="text-base font-medium text-white hover:text-gray-300">Dashboard</a>
+                  <a href="/pricing" class="text-base font-medium text-white hover:text-gray-300">Pricing</a>
+                </div>
+              </div>
+              <div class="hidden md:flex md:items-center md:space-x-6">
+                <% if !current_user %>
+                  <a href="/users/sign_in" class="text-base font-medium text-white hover:text-gray-300"> Log in </a>
+                  <a href="/users/sign_up" class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium text-white bg-cyan-600 hover:bg-cyan-700"> Join today </a>
+                <% else %>
+                  <span class="text-white"><%= current_user.email %></span>
+                  <a href="/users/sign_out" class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium text-white bg-gray-600 hover:bg-gray-700">Log out</a>
+                <% end %>
+              </div>
+            </nav>
+          </div>
+        </header>
+        <main>
+          <div class="pt-10 bg-richblack sm:pt-16 lg:pt-8 lg:pb-14 lg:overflow-hidden">
+            <div class="mx-auto max-w-7xl lg:px-8">
+              <div class="lg:grid lg:grid-cols-2 lg:gap-8">
+                <div class="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:px-0 lg:text-left lg:flex lg:items-center">
+                  <div class="lg:py-12">
+                    <h1 class="text-4xl tracking-tight font-extrabold text-white sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
+                      <span class="block font-bold">The most productive</span>
+                      <span class="pb-3 block bg-clip-text text-transparent bg-gradient-to-r from-green-200 to-emerald-400 sm:pb-5">project management ever</span>
+                    </h1>
+                    <p class="text-base text-gray-300 sm:text-xl lg:text-lg xl:text-xl">We rebuilt the ticketing from the ground up to make you excellent at what you do. Expert features that make you feel like the expert you are. Insights from analytics and channel management. </p>
+                    <p class="text-base text-gray-300 sm:text-xl lg:text-lg xl:text-xl pt-4">ProductiveManagement is so quick, fun, and smart — you'll feel like you're a 10x engineer. </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
