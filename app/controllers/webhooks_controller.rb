@@ -67,20 +67,20 @@ class WebhooksController < ApplicationController
         user: user,
         stripe_id: checkout_session.customer
       )
-
-      subscription = Stripe::Subscription.retrieve(
-        id: checkout_session.subscription,
-        expand: ['items.data.price.product']
-      )
-
-      subscription = Subscription.create!(
-        customer: customer,
-        stripe_id: subscription.id,
-        stripe_price_id: subscription.items.data.first.price.id,
-        stripe_product_name: subscription.items.data.first.price.product.name,
-        status: subscription.status,
-        quantity: subscription.items.data.first.quantity
-      )
     end
+
+    subscription = Stripe::Subscription.retrieve(
+      id: checkout_session.subscription,
+      expand: ['items.data.price.product']
+    )
+
+    Subscription.create!(
+      customer: customer,
+      stripe_id: subscription.id,
+      stripe_price_id: subscription.items.data.first.price.id,
+      stripe_product_name: subscription.items.data.first.price.product.name,
+      status: subscription.status,
+      quantity: subscription.items.data.first.quantity
+    )
   end
 end

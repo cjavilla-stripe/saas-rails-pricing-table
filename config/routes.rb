@@ -4,4 +4,5 @@ Rails.application.routes.draw do
   resource :dashboard, only: [:show]
   resource :billing
   resources :webhooks, only: [:create]
+  resource :pricing
 end
